@@ -21,6 +21,7 @@ jobs:
           GITLEAKS_CONFIG: .gitleaks.toml
 
   backend:
+    needs: [security]
     name: 🔧 Backend Check
     runs-on: ubuntu-latest
     steps:
@@ -44,6 +45,7 @@ jobs:
         run: npm audit --audit-level=high
 
   frontend:
+    needs: [security]
     name: 🎨 Frontend Check
     runs-on: ubuntu-latest
     steps:
@@ -62,8 +64,6 @@ jobs:
       - name: Build
         working-directory: {{FRONTEND_DIR}}
         run: npm run build
-        env:
-          NEXT_PUBLIC_API_URL: http://localhost:5000
       - name: Security audit
         working-directory: {{FRONTEND_DIR}}
         run: npm audit --audit-level=high

@@ -11,5 +11,8 @@
     "husky": "^9.0.0",
     "lint-staged": "^15.0.0"
   },
-  "lint-staged": {}
-}
+  "lint-staged": {
+    "{{BACKEND_DIR}}/**/*.{ts,js}": ["eslint --fix --max-warnings=0"],
+    "{{FRONTEND_DIR}}/**/*.{ts,tsx,js,jsx}": ["eslint --fix --max-warnings=0"]
+  }
+
