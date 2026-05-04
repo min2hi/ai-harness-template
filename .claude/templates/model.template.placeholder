@@ -1,0 +1,16 @@
+# Data Model / Schema Template
+
+Universal template for database models or data schemas.
+Stack: {{DB_STACK}}
+
+## Structure
+- Entity: {{ENTITY_NAME}}
+- Table: {{TABLE_NAME}}
+
+## Fields
+- id: Primary Key
+- created_at: Timestamp
+- {{FIELD_NAME}}: {{FIELD_TYPE}}
+
+## Relationships
+- {{RELATION_NAME}}: {{RELATION_TYPE}}
