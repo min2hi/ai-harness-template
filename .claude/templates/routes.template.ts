@@ -1,7 +1,7 @@
 // @ts-nocheck — File này là TEMPLATE (code mẫu), không được biên dịch trực tiếp.
 // Copy sang backend/src/ và thay thế placeholder trước khi dùng.
 /**
- * TEMPLATE: MediChain Route
+ * TEMPLATE: {{PROJECT_NAME}} Route
  * ============================================================
  * HƯỚNG DẪN SỬ DỤNG:
  *   1. Copy file này → đổi tên thành `<tên>.routes.ts`

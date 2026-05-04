@@ -17,7 +17,7 @@
       ↓
 7. git add → git commit (message chuẩn Conventional Commits)
       ↓
-8. git push → tạo PR
+8. gitnexus analyze → Re-index (không cần --embeddings cho bug fix/refactor)
 ```
 
 ---
@@ -80,3 +80,32 @@ cp docs/adr/ADR-000-template.md docs/adr/ADR-00N-ten-ngan.md
 ```
 
 > **Nguyên tắc:** ADR viết cùng lúc hoặc trước khi code — không phải sau.
+
+---
+
+## Re-index GitNexus — Khi Nào & Lệnh Nào
+
+> **Yêu cầu:** Cài global 1 lần khi setup: `npm install -g gitnexus@1.6.3`  
+> ⚠️ KHÔNG dùng `npx gitnexus` trên Windows → gây EPERM (file-lock trên native .dll bindings)
+
+```bash
+# Sau bug fix / refactor (nhanh ~10s)
+gitnexus analyze
+
+# Sau khi thêm feature / service mới (chậm hơn, dùng AI embeddings)
+gitnexus analyze --embeddings
+
+# Nếu index bị corrupt (WAL error) → reset và rebuild
+gitnexus clean --force
+gitnexus analyze --embeddings
+```
+
+### Khi nào cần chạy?
+
+| Sự kiện | Cần re-index? |
+|---------|--------------|
+| Sau commit có thêm/sửa source files (`.ts`, `.js`, `.py`, v.v.) | ✅ Có |
+| Sau `git merge` | ✅ Có |
+| Thêm service/controller mới | ✅ Có (`--embeddings`) |
+| Chỉ sửa CSS, strings, comments | ❌ Không cần |
+| Chỉ sửa config files | ❌ Không cần |

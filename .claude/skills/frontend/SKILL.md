@@ -1,9 +1,11 @@
 # Frontend Development Rules
 
-> Stack: <!-- TODO: Next.js 14 App Router + TypeScript + TailwindCSS -->
+> Stack: <!-- TODO: Điền stack thực tế, ví dụ: Next.js 14 App Router + TypeScript + TailwindCSS | React + Vite | Flutter Web -->
 
-## File Structure (App Router)
+## File Structure
 
+<!-- TODO: Điền cấu trúc thư mục thực tế của project -->
+<!-- Ví dụ cho Next.js App Router:
 ```
 src/
 ├── app/               ← Pages và layouts (App Router)
@@ -15,12 +17,13 @@ src/
 ├── hooks/             ← Custom React hooks
 └── types/             ← TypeScript type definitions
 ```
+-->
 
 ## API Client Pattern
 
 ```typescript
 // lib/api.ts — tập trung tất cả API calls vào đây
-const API_BASE = process.env.NEXT_PUBLIC_API_URL;
+const API_BASE = process.env.NEXT_PUBLIC_API_URL; // hoặc import.meta.env.VITE_API_URL
 
 export async function apiGet<T>(path: string): Promise<T> {
   const res = await fetch(`${API_BASE}${path}`, {
@@ -31,11 +34,23 @@ export async function apiGet<T>(path: string): Promise<T> {
 }
 ```
 
-## Rules
+## Rules — Áp Dụng Cho Mọi Frontend Stack
 
-- Server Components mặc định — chỉ dùng `'use client'` khi thực sự cần
-- Không gọi API trực tiếp trong component — dùng custom hook hoặc lib/api.ts
-- Loading state và error state phải được xử lý
-- KHÔNG hardcode URL — dùng `process.env.NEXT_PUBLIC_*`
+- **Tách biệt concerns:** Không gọi API trực tiếp trong component UI — dùng custom hook, service layer, hoặc state management.
+- **Không hardcode URL:** Dùng biến môi trường (`process.env.*` / `import.meta.env.*`).
+- **Xử lý loading & error state** ở mọi async call — không để UI treo không phản hồi.
+- **KHÔNG dùng `any` trong TypeScript** — khai báo interface/type rõ ràng.
+- **Tối ưu re-render:** Tránh tạo object/array mới trong JSX render; dùng `useMemo`/`useCallback` khi cần.
+- **Accessibility:** Mọi button/input phải có `aria-label` hoặc visible label.
 
-<!-- TODO: Thêm rules specific cho project (component library, state management, etc.) -->
+## Self-Check
+
+```
+[ ] Không gọi API trực tiếp trong component
+[ ] Không hardcode URL hay credentials
+[ ] Loading state và error state đã được xử lý
+[ ] Không có `any` type không cần thiết
+[ ] Không có console.log debug
+```
+
+<!-- TODO: Thêm rules đặc thù cho project (component library, state management, routing) -->

@@ -55,6 +55,12 @@ echo "📦 Cài npm dependencies..."
 npm install
 
 echo ""
+echo "🧠 Cài GitNexus Code Intelligence (global)..."
+# Cài global → tránh EPERM trên Windows, nhanh hơn npx
+npm install -g gitnexus@1.6.3
+echo "  ✅ gitnexus cài xong. Dùng: gitnexus analyze"
+
+echo ""
 echo "✅ Setup hoàn tất!"
 echo ""
 echo "📋 Việc cần làm tiếp theo:"

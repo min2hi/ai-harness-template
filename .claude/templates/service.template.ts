@@ -1,7 +1,7 @@
 // @ts-nocheck — File này là TEMPLATE (code mẫu), không được biên dịch trực tiếp.
 // Copy sang backend/src/ và thay thế placeholder trước khi dùng.
 /**
- * TEMPLATE: MediChain Service
+ * TEMPLATE: {{PROJECT_NAME}} Service
  * ============================================================
  * HƯỚNG DẪN SỬ DỤNG:
  *   1. Copy file này → đổi tên thành `<tên>.service.ts`

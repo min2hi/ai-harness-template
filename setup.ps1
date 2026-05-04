@@ -61,10 +61,17 @@ foreach ($file in $files) {
     }
 }
 
-# ─── Cài npm dependencies ────────────────────────────────────
+# ─── Cài npm dependencies ────────────────────────────────────────────
 Write-Host ""
 Write-Host "📦 Cài npm dependencies (husky, commitlint, lint-staged)..." -ForegroundColor Cyan
 npm install
+
+# ─── Cài GitNexus global ────────────────────────────────────────────────
+Write-Host ""
+Write-Host "🧠 Cài GitNexus Code Intelligence (global)..." -ForegroundColor Cyan
+# Cài global → tránh EPERM Windows bug khi dùng npx (file-lock trên .dll bindings)
+npm install -g gitnexus@1.6.3
+Write-Host "  ✅ gitnexus đã cài global. Dùng: gitnexus analyze" -ForegroundColor Green
 
 # ─── Init Husky ──────────────────────────────────────────────
 Write-Host ""
