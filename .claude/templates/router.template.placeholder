@@ -1,0 +1,15 @@
+# Router / API Template
+
+Universal template for API endpoints.
+Stack: {{BACKEND_STACK}}
+
+## Structure
+- Endpoint: /api/v1/{{RESOURCE_NAME}}
+- Method: {{HTTP_METHOD}}
+
+## Input/Output
+- Payload: {{SCHEMA_NAME}}
+- Response: { success: true, data: ... }
+
+## Auth
+- Required Role: {{ROLE}}
