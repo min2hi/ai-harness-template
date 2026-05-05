@@ -1,88 +1,89 @@
 # Backend Development Rules
 
-> Stack: <!-- TODO: Điền stack thực tế, ví dụ: Node.js + Express + TypeScript + Prisma | NestJS | FastAPI | Django -->
+> Stack: <!-- TODO: Điền stack thực tế, e.g. FastAPI+Python | Node.js+Express | Go | Laravel -->
 
 ## ⛔ Impact Analysis — Nguyên Tắc Dò Mìn (BẮT BUỘC)
 
-Trước khi sửa BẤT KỲ hàm/biến có sẵn nào:
+Trước khi sửa BẤT KỲ function/class có sẵn nào:
 
 ```
-Bước 1: Tìm tất cả nơi đang gọi hàm/biến đó
-        → grep -r "functionName" src/
+Bước 1: Tìm tất cả nơi đang gọi function/class đó
+        → grep -r "function_name" src/   (hoặc tool search của IDE)
 Bước 2: Đánh giá blast radius
-        → d=1 (WILL BREAK): caller trực tiếp — PHẢI cập nhật
+        → d=1 (WILL BREAK): caller trực tiếp — PHẢI cập nhật đồng thời
         → d=2 (LIKELY AFFECTED): caller gián tiếp — Nên test
-Bước 3: Nếu có nhiều d=1 caller → báo user trước khi sửa
-Bước 4: Sửa function + cập nhật TẤT CẢ d=1 callers đồng thời
+Bước 3: Nếu có nhiều d=1 callers → báo user TRƯỚC khi sửa
+Bước 4: Sửa function + cập nhật TẤT CẢ d=1 callers trong cùng commit
 ```
 
 ## Architecture Pattern
 
 ```
-Request → Route → Middleware → Controller → Service → Data Layer → DB
+<!-- TODO: Điền pattern phù hợp với stack của bạn -->
+
+Ví dụ phổ biến:
+  MVC:        Request → Router → Controller → Service → Model → DB
+  Clean Arch: Request → Controller → Use Case → Repository → DB
+  Hexagonal:  Request → Port → Adapter → Domain → Port → DB
 ```
 
-- **Route**: Chỉ định nghĩa endpoint và middleware, không có logic
-- **Controller**: Nhận request, gọi Service, trả response — **KHÔNG** có business logic
-- **Service**: Toàn bộ business logic — **KHÔNG** import `Request`/`Response`
-- **Data Layer** (Prisma/TypeORM/Mongoose/v.v.): Data access — dùng `select`/`projection` để tránh data leak
+- **Router/Controller**: Chỉ xử lý HTTP — nhận request, gọi service, trả response. KHÔNG có business logic.
+- **Service/Use Case**: Toàn bộ business logic. KHÔNG import HTTP framework objects.
+- **Repository/Data Layer**: Database access. Chỉ lấy fields cần thiết (chống data leak).
 
 ## Standard Response Format
 
-```typescript
-// Success
-{ success: true, data: T, message?: string }
+```
+<!-- TODO: Định nghĩa response format chuẩn cho project -->
 
-// Error
-{ success: false, message: string, errorCode?: string }
+Ví dụ:
+  Success: { success: true, data: T, message?: string }
+  Error:   { success: false, message: string, errorCode?: string }
 ```
 
 ## Error Handling
 
-```typescript
-// Controller — mọi method đều có try/catch
-async create(req: Request, res: Response) {
-  try {
-    const result = await this.service.create(req.user.id, req.body);
-    res.status(201).json({ success: true, data: result });
-  } catch (error) {
-    const message = error instanceof Error ? error.message : 'Lỗi không xác định';
-    res.status(400).json({ success: false, message });
-  }
-}
 ```
+<!-- TODO: Quy tắc xử lý lỗi theo stack của bạn -->
+
+Nguyên tắc chung:
+  - Mọi async operation phải có error handling
+  - Không expose stack trace ra client
+  - Log đầy đủ context ở server (không log sensitive data)
+  - Trả về HTTP status code phù hợp (400/401/403/404/422/500)
+```
+
+## Security Rules (Universal)
+
+- **Chống IDOR:** Mọi resource query phải filter theo owner ID — không tin dữ liệu từ client
+- **Auth on routes:** Mọi protected route phải có auth middleware/guard
+- **Input validation:** Validate và sanitize input trước khi xử lý hoặc query DB
+- **No sensitive log:** KHÔNG log password, token, secret, PII
+- **No hardcoded secrets:** Dùng biến môi trường
 
 ## Data Access Rules
 
-```typescript
-// ✅ ĐÚNG — select chỉ lấy field cần thiết (Prisma example)
-const user = await prisma.user.findUnique({
-  where: { id },
-  select: { id: true, name: true, email: true }
-});
-
-// ❌ SAI — không bao giờ trả về toàn bộ object (có thể leak password/secret)
-const user = await prisma.user.findUnique({ where: { id } });
 ```
+<!-- TODO: Điền rules cụ thể theo ORM/DB của bạn -->
 
-> Nguyên tắc này áp dụng cho mọi ORM: dùng `select` (Prisma), `projection` (Mongoose), `columns` (TypeORM) để chỉ lấy field cần thiết.
-
-## Security Rules
-
-- Mọi CRUD phải filter theo `userId` (chống IDOR — Insecure Direct Object Reference)
-- Protected routes phải có `authMiddleware` (hoặc guard tương đương)
-- **KHÔNG** log sensitive data (password, token, PII)
-- **KHÔNG** hardcode secrets — dùng biến môi trường (`process.env.*`)
-- Validate và sanitize input trước khi xử lý
+Nguyên tắc chung:
+  - Chỉ select fields cần thiết (không select *)
+  - Luôn có LIMIT khi query list (tránh full table scan)
+  - Index cho các cột thường dùng trong WHERE/ORDER BY
+  - Dùng prepared statements / parameterized queries (chống SQL injection)
+```
 
 ## Self-Check
 
 ```
-[ ] Controller không chứa business logic
-[ ] Mọi async method có try/catch
-[ ] Data query dùng select/projection
-[ ] Filter theo userId cho user-owned resources
-[ ] Không có console.log debug
+[ ] Controller/Router không chứa business logic
+[ ] Mọi async operation có error handling
+[ ] Data query chỉ lấy fields cần thiết
+[ ] Filter theo owner ID cho user-owned resources (chống IDOR)
+[ ] Không có debug log trong production code
 [ ] Không có hardcoded secrets
-[ ] Input được validate trước khi query DB
+[ ] Input được validate trước khi xử lý
+[ ] Protected routes có auth guard/middleware
 ```
+
+<!-- TODO: Thêm rules đặc thù cho stack (ORM patterns, DB session management, v.v.) -->

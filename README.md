@@ -96,14 +96,19 @@ rm setup.ps1 setup.sh             # Mac/Linux
 ├── .claude/
 │   ├── skills/                    ← AI domain knowledge
 │   │   ├── architecture/SKILL.md  ← ⚠️  CẦN ĐIỀN THÔNG TIN DỰ ÁN
-│   │   ├── backend/SKILL.md       ← Express+TS rules (portable)
-│   │   ├── frontend/SKILL.md      ← Next.js rules (portable)
+│   │   ├── backend/SKILL.md       ← Backend rules (stack-agnostic)
+│   │   ├── frontend/SKILL.md      ← Frontend rules (stack-agnostic)
 │   │   ├── testing/SKILL.md       ← Test hygiene rules
 │   │   └── git-workflow/SKILL.md  ← Git + ADR workflow
 │   └── templates/                 ← Code templates
-│       ├── service.template.ts
-│       ├── controller.template.ts
-│       └── routes.template.ts
+│       ├── service.template.ts    ← TypeScript service
+│       ├── controller.template.ts ← TypeScript controller
+│       ├── routes.template.ts     ← TypeScript routes
+│       ├── service.template.py    ← Python/FastAPI service
+│       ├── router.template.py     ← Python/FastAPI router
+│       ├── model.template.py      ← SQLAlchemy model
+│       ├── schema.template.py     ← Pydantic v2 schema
+│       └── celery_task.template.py ← Celery background task
 ├── .github/
 │   ├── workflows/ci.yml           ← Gitleaks + Build + Test + Audit
 │   ├── dependabot.yml             ← Auto dependency updates
@@ -130,4 +135,4 @@ Script sẽ thay thế các placeholder sau:
 
 ---
 
-Made with ❤️ — based on [MediChain](https://github.com/min2hi/medi_chain) AI Harness
+Made with ❤️ by [min2hi](https://github.com/min2hi)

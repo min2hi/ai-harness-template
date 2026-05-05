@@ -32,14 +32,26 @@
 [optional footer]
 ```
 
-**Types:** `feat` | `fix` | `refactor` | `chore` | `docs` | `test` | `perf` | `style` | `ci` | `revert`
+**Types cơ bản:** `feat` | `fix` | `refactor` | `chore` | `docs` | `test` | `perf` | `style` | `ci` | `revert`
+
+**Types ML/AI (bổ sung cho project này):**
+
+| Type | Khi nào dùng |
+|---|---|
+| `ml` | Thay đổi training pipeline, hyperparameters, feature engineering |
+| `data` | Thêm/sửa dataset (phải kèm `dvc push`) |
+| `model` | Deploy/promote model version mới |
+| `agent` | Thay đổi agent tools, prompts, HITL rules |
 
 **Ví dụ:**
 ```bash
-feat(auth): add refresh token endpoint
-fix(api): handle null response from payment service
-docs(adr): add ADR-004 why we chose redis for caching
-chore(deps): update prisma to 5.14.0
+feat(tasks): add context_switch_count field to task schema
+fix(api): handle null actual_time in drift monitor
+ml(predictor): retrain xgboost with 50k samples, val_mae=1.1h
+data(tasks): add 40k LLM-augmented samples, dvc tag dataset-v2.0
+model(predictor): promote v1.3 from shadow to production, run_id=abc123
+agent(research): add arxiv.org to SafeWebCrawler allowlist
+docs(adr): add ADR-001 why we chose FastAPI over Django
 ```
 
 **Sẽ bị chặn:**
@@ -58,6 +70,8 @@ main       ← Production (protected, chỉ merge qua PR)
 develop    ← Staging (protected)
 feat/*     ← Feature branches (từ develop)
 fix/*      ← Bug fix branches
+ml/*       ← ML training/experiment branches
+data/*     ← Dataset update branches (phải kèm DVC)
 ```
 
 ---
@@ -109,3 +123,36 @@ gitnexus analyze --embeddings
 | Thêm service/controller mới | ✅ Có (`--embeddings`) |
 | Chỉ sửa CSS, strings, comments | ❌ Không cần |
 | Chỉ sửa config files | ❌ Không cần |
+
+---
+
+## DVC + MLflow Commit Rules
+
+```
+Quy tắc bắt buộc:
+
+1. Mọi commit type `data` PHẢI:
+   → dvc push trước khi git commit
+   → git tag dataset-vX.Y cùng lúc
+   → Commit message ghi rõ số records và nguồn data
+
+2. Mọi commit type `model` PHẢI:
+   → Ghi MLflow run_id vào commit body
+   → Ghi stage cũ → stage mới (Shadow→Production)
+   → Không promote thẳng từ Staging lên Production
+
+3. Mọi commit type `ml` PHẢI:
+   → Ghi validation metrics vào commit body (val_mae, val_rmse)
+   → Đảm bảo FeatureExtractor không thay đổi (chống training-serving skew)
+```
+
+**Ví dụ commit body cho model promotion:**
+```bash
+model(predictor): promote v1.3 from shadow to production
+
+MLflow run_id: abc123def456
+Previous stage: Shadow (7 days)
+val_mae: 1.1h → shadow_mae: 1.05h (improvement: 4.5%)
+DVC dataset: dataset-v2.0
+Approved by: @team-lead
+```
