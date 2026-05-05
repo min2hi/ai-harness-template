@@ -1,0 +1,13 @@
+# Service Template
+
+Core business logic service for {{PROJECT_NAME}}.
+Stack: {{BACKEND_STACK}}
+
+## Structure
+- Name: {{NAME}}Service
+- Purpose: {{PURPOSE}}
+
+## Key Methods
+- execute(): Core logic
+- validate(): Data validation
+- get_results(): Return processed data

@@ -1,4 +1,4 @@
-# {{PROJECT_NAME}} — AI Agent Context
+# {{PROJECT_NAME}} - AI Agent Context
 
 > **Entry point duy nhất cho AI context.**
 > Đọc section này trước, sau đó đọc SKILL.md tương ứng với task.

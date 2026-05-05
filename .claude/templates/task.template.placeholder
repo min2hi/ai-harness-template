@@ -1,0 +1,13 @@
+# Background Job / Task Template
+
+Universal template for asynchronous tasks or background jobs.
+Stack: {{TASK_STACK}}
+
+## Structure
+- Task Name: {{TASK_NAME}}
+- Queue: {{QUEUE_NAME}}
+
+## Logic
+- Input: {{DATA_SCHEMA}}
+- Process: {{STEP_BY_STEP}}
+- Retry Policy: {{RETRY_STRATEGY}}

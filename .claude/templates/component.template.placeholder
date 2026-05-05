@@ -1,0 +1,15 @@
+# UI Component Template
+
+Universal template for frontend components.
+Stack: {{FRONTEND_STACK}}
+
+## Structure
+- Name: {{COMPONENT_NAME}}
+- Type: {{COMPONENT_TYPE}} (e.g., Atom, Molecule, Page)
+
+## Properties
+- {{PROP_NAME}}: {{PROP_TYPE}}
+
+## Logic
+- State: {{STATE_DESCRIPTION}}
+- Events: {{EVENT_HANDLERS}}
